@@ -201,7 +201,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 	@Override
 	public <T> T getBean(String name, @Nullable Class<T> requiredType) throws BeansException {
-		return doGetBean(name, requiredType, null, false);
+		return doGetBean(name, requiredType, null, false); //实例化Bean
 	}
 
 	@Override
@@ -254,7 +254,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					logger.debug("Returning cached instance of singleton bean '" + beanName + "'");
 				}
 			}
-			bean = getObjectForBeanInstance(sharedInstance, name, beanName, null);
+			bean = getObjectForBeanInstance(sharedInstance, name, beanName, null); //直接获取已经创建好的实例
 		}
 
 		else {
@@ -299,7 +299,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 							throw new BeanCreationException(mbd.getResourceDescription(), beanName,
 									"Circular depends-on relationship between '" + beanName + "' and '" + dep + "'");
 						}
-						registerDependentBean(dep, beanName);
+						registerDependentBean(dep, beanName); //注册依赖Bean
 						try {
 							getBean(dep);
 						}
@@ -312,6 +312,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 				// Create bean instance.
 				if (mbd.isSingleton()) {
+					//IOC:stepA9 这里创建Bean的实例
 					sharedInstance = getSingleton(beanName, () -> {
 						try {
 							return createBean(beanName, mbd, args);
@@ -849,7 +850,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		Assert.notNull(beanPostProcessor, "BeanPostProcessor must not be null");
 		this.beanPostProcessors.remove(beanPostProcessor);
 		this.beanPostProcessors.add(beanPostProcessor);
-		if (beanPostProcessor instanceof InstantiationAwareBeanPostProcessor) {
+		if (beanPostProcessor instanceof InstantiationAwareBeanPostProcessor) {  //是否继承InstantiationAwareBeanPostProcessor，说的就是internalAutoProxyCreator
 			this.hasInstantiationAwareBeanPostProcessors = true;
 		}
 		if (beanPostProcessor instanceof DestructionAwareBeanPostProcessor) {

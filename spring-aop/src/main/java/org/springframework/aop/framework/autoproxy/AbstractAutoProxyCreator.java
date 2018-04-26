@@ -266,7 +266,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 				this.targetSourcedBeans.add(beanName);
 			}
 			Object[] specificInterceptors = getAdvicesAndAdvisorsForBean(beanClass, beanName, targetSource);
-			Object proxy = createProxy(beanClass, beanName, specificInterceptors, targetSource);
+			Object proxy = createProxy(beanClass, beanName, specificInterceptors, targetSource);//IOC:stepA13  创建代理
 			this.proxyTypes.put(cacheKey, proxy.getClass());
 			return proxy;
 		}
@@ -470,7 +470,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 			proxyFactory.setPreFiltered(true);
 		}
 
-		return proxyFactory.getProxy(getProxyClassLoader());
+		return proxyFactory.getProxy(getProxyClassLoader());//IOC:stepA14
 	}
 
 	/**

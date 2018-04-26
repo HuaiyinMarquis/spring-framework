@@ -487,6 +487,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		try {
 			// Give BeanPostProcessors a chance to return a proxy instead of the target bean instance.
+			//IOC:stepA10 给BeanPostProcessor一个机会返回一个代理实例代替Bean实例
 			Object bean = resolveBeforeInstantiation(beanName, mbdToUse);
 			if (bean != null) {
 				return bean;
@@ -1037,7 +1038,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			if (!mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) {
 				Class<?> targetType = determineTargetType(beanName, mbd);
 				if (targetType != null) {
-					bean = applyBeanPostProcessorsBeforeInstantiation(targetType, beanName);
+					bean = applyBeanPostProcessorsBeforeInstantiation(targetType, beanName);//IOC:stepA11 给机会 do this
 					if (bean != null) {
 						bean = applyBeanPostProcessorsAfterInitialization(bean, beanName);
 					}
@@ -1064,7 +1065,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		for (BeanPostProcessor bp : getBeanPostProcessors()) {
 			if (bp instanceof InstantiationAwareBeanPostProcessor) {
 				InstantiationAwareBeanPostProcessor ibp = (InstantiationAwareBeanPostProcessor) bp;
-				Object result = ibp.postProcessBeforeInstantiation(beanClass, beanName);
+				Object result = ibp.postProcessBeforeInstantiation(beanClass, beanName);//IOC:stepA12
 				if (result != null) {
 					return result;
 				}

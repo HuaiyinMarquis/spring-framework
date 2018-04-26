@@ -186,13 +186,19 @@ class PostProcessorRegistrationDelegate {
 	public static void registerBeanPostProcessors(
 			ConfigurableListableBeanFactory beanFactory, AbstractApplicationContext applicationContext) {
 
+		/**
+		 * IOC:stepA6-1 获取到所有实现BeanPostProcessor的类
+		 * 		org.springframework.context.annotation.internalAutowiredAnnotationProcessor
+		 * 		org.springframework.context.annotation.internalRequiredAnnotationProcessor
+		 * 		org.springframework.aop.config.internalAutoProxyCreator
+		 */
 		String[] postProcessorNames = beanFactory.getBeanNamesForType(BeanPostProcessor.class, true, false);
 
 		// Register BeanPostProcessorChecker that logs an info message when
 		// a bean is created during BeanPostProcessor instantiation, i.e. when
 		// a bean is not eligible for getting processed by all BeanPostProcessors.
 		int beanProcessorTargetCount = beanFactory.getBeanPostProcessorCount() + 1 + postProcessorNames.length;
-		beanFactory.addBeanPostProcessor(new BeanPostProcessorChecker(beanFactory, beanProcessorTargetCount));
+		beanFactory.addBeanPostProcessor(new BeanPostProcessorChecker(beanFactory, beanProcessorTargetCount));//注意这个地方
 
 		// Separate between BeanPostProcessors that implement PriorityOrdered,
 		// Ordered, and the rest.
@@ -200,6 +206,7 @@ class PostProcessorRegistrationDelegate {
 		List<BeanPostProcessor> internalPostProcessors = new ArrayList<>();
 		List<String> orderedPostProcessorNames = new ArrayList<>();
 		List<String> nonOrderedPostProcessorNames = new ArrayList<>();
+		//对实现不同接口的BeanPostProcessor执行顺序进行控制
 		for (String ppName : postProcessorNames) {
 			if (beanFactory.isTypeMatch(ppName, PriorityOrdered.class)) {
 				BeanPostProcessor pp = beanFactory.getBean(ppName, BeanPostProcessor.class);
@@ -208,7 +215,7 @@ class PostProcessorRegistrationDelegate {
 					internalPostProcessors.add(pp);
 				}
 			}
-			else if (beanFactory.isTypeMatch(ppName, Ordered.class)) {
+			else if (beanFactory.isTypeMatch(ppName, Ordered.class)) { // internalAutoProxyCreator 放在这里
 				orderedPostProcessorNames.add(ppName);
 			}
 			else {
@@ -223,14 +230,14 @@ class PostProcessorRegistrationDelegate {
 		// Next, register the BeanPostProcessors that implement Ordered.
 		List<BeanPostProcessor> orderedPostProcessors = new ArrayList<>();
 		for (String ppName : orderedPostProcessorNames) {
-			BeanPostProcessor pp = beanFactory.getBean(ppName, BeanPostProcessor.class);
+			BeanPostProcessor pp = beanFactory.getBean(ppName, BeanPostProcessor.class); //实例化BeanPostProcessor
 			orderedPostProcessors.add(pp);
 			if (pp instanceof MergedBeanDefinitionPostProcessor) {
 				internalPostProcessors.add(pp);
 			}
 		}
 		sortPostProcessors(orderedPostProcessors, beanFactory);
-		registerBeanPostProcessors(beanFactory, orderedPostProcessors);
+		registerBeanPostProcessors(beanFactory, orderedPostProcessors); //注册到BeanFactory
 
 		// Now, register all regular BeanPostProcessors.
 		List<BeanPostProcessor> nonOrderedPostProcessors = new ArrayList<>();

@@ -123,7 +123,7 @@ public abstract class AopConfigUtils {
 
 		Assert.notNull(registry, "BeanDefinitionRegistry must not be null");
 
-		if (registry.containsBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME)) {
+		if (registry.containsBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME)) { //AOP:stepA4 判断是否已经注册internalAutoProxyCreator（对应AnnotationAwareAspectJAutoProxyCreator）
 			BeanDefinition apcDefinition = registry.getBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME);
 			if (!cls.getName().equals(apcDefinition.getBeanClassName())) {
 				int currentPriority = findPriorityForClass(apcDefinition.getBeanClassName());
@@ -139,7 +139,7 @@ public abstract class AopConfigUtils {
 		beanDefinition.setSource(source);
 		beanDefinition.getPropertyValues().add("order", Ordered.HIGHEST_PRECEDENCE);
 		beanDefinition.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
-		registry.registerBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME, beanDefinition);
+		registry.registerBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME, beanDefinition);//AOP:stepA5 注册新建的internalAutoProxyCreator（AnnotationAwareAspectJAutoProxyCreator）
 		return beanDefinition;
 	}
 

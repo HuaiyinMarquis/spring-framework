@@ -519,6 +519,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			prepareRefresh();
 
 			// Tell the subclass to refresh the internal bean factory.
+			//IOC:stepA5  如果beanFactory已经存在则销毁bean，重新创建BeanFactory
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
 			// Prepare the bean factory for use in this context.
@@ -532,6 +533,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				invokeBeanFactoryPostProcessors(beanFactory);
 
 				// Register bean processors that intercept bean creation.
+				//IOC:stepA6 为初始化Bean注册BeanPostProcessors到BeanFactory
 				registerBeanPostProcessors(beanFactory);
 
 				// Initialize message source for this context.
@@ -547,6 +549,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				registerListeners();
 
 				// Instantiate all remaining (non-lazy-init) singletons.
+				//IOC:stepA7 初始化非懒加载单例
 				finishBeanFactoryInitialization(beanFactory);
 
 				// Last step: publish corresponding event.
@@ -866,7 +869,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		beanFactory.freezeConfiguration();
 
 		// Instantiate all remaining (non-lazy-init) singletons.
-		beanFactory.preInstantiateSingletons();
+		beanFactory.preInstantiateSingletons(); //入口
 	}
 
 	/**
