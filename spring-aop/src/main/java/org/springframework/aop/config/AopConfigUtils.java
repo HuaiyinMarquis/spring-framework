@@ -100,7 +100,7 @@ public abstract class AopConfigUtils {
 	public static BeanDefinition registerAspectJAnnotationAutoProxyCreatorIfNecessary(BeanDefinitionRegistry registry,
 			@Nullable Object source) {
 
-		return registerOrEscalateApcAsRequired(AnnotationAwareAspectJAutoProxyCreator.class, registry, source);
+		return registerOrEscalateApcAsRequired(AnnotationAwareAspectJAutoProxyCreator.class, registry, source);//传入AnnotationAwareAspectJAutoProxyCreator.class
 	}
 
 	public static void forceAutoProxyCreatorToUseClassProxying(BeanDefinitionRegistry registry) {

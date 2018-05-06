@@ -499,7 +499,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		try {
-			Object beanInstance = doCreateBean(beanName, mbdToUse, args);
+			Object beanInstance = doCreateBean(beanName, mbdToUse, args);  //创建Bean实例
 			if (logger.isDebugEnabled()) {
 				logger.debug("Finished creating instance of bean '" + beanName + "'");
 			}
@@ -539,7 +539,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			instanceWrapper = this.factoryBeanInstanceCache.remove(beanName);
 		}
 		if (instanceWrapper == null) {
-			instanceWrapper = createBeanInstance(beanName, mbd, args);
+			instanceWrapper = createBeanInstance(beanName, mbd, args);//创建实例
 		}
 		final Object bean = instanceWrapper.getWrappedInstance();
 		Class<?> beanType = instanceWrapper.getWrappedClass();
@@ -574,10 +574,11 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		// Initialize the bean instance.
+		//初始化实例
 		Object exposedObject = bean;
 		try {
 			populateBean(beanName, mbd, instanceWrapper); //为Bean的属性赋值
-			exposedObject = initializeBean(beanName, exposedObject, mbd); //实例化对象
+			exposedObject = initializeBean(beanName, exposedObject, mbd); //初始化对象
 		}
 		catch (Throwable ex) {
 			if (ex instanceof BeanCreationException && beanName.equals(((BeanCreationException) ex).getBeanName())) {
@@ -1038,9 +1039,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			if (!mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) {
 				Class<?> targetType = determineTargetType(beanName, mbd);
 				if (targetType != null) {
-					bean = applyBeanPostProcessorsBeforeInstantiation(targetType, beanName);//IOC:stepA11 给机会 do this
+					bean = applyBeanPostProcessorsBeforeInstantiation(targetType, beanName);
 					if (bean != null) {
-						bean = applyBeanPostProcessorsAfterInitialization(bean, beanName);
+						bean = applyBeanPostProcessorsAfterInitialization(bean, beanName);//IOC:stepA11 给机会 do this
 					}
 				}
 			}
@@ -1063,7 +1064,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	@Nullable
 	protected Object applyBeanPostProcessorsBeforeInstantiation(Class<?> beanClass, String beanName) {
 		for (BeanPostProcessor bp : getBeanPostProcessors()) {
-			if (bp instanceof InstantiationAwareBeanPostProcessor) {
+			if (bp instanceof InstantiationAwareBeanPostProcessor) { //AOP internalAutoProxyCreator true
 				InstantiationAwareBeanPostProcessor ibp = (InstantiationAwareBeanPostProcessor) bp;
 				Object result = ibp.postProcessBeforeInstantiation(beanClass, beanName);//IOC:stepA12
 				if (result != null) {
@@ -1691,7 +1692,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			}, getAccessControlContext());
 		}
 		else {
-			invokeAwareMethods(beanName, bean);
+			invokeAwareMethods(beanName, bean); //Aware接口的方法回调
 		}
 
 		Object wrappedBean = bean;

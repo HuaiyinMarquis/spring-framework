@@ -9,7 +9,9 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 /**
  * 基于注解的AOP源码分析：
- * 1、给容器中注册AnnotationAwareAspectJAutoProxyCreator （AOP:stepAX ）
+ * 1、给容器中注册AnnotationAwareAspectJAutoProxyCreator,对应容器的名称为：“org.springframework.aop.config.internalAutoProxyCreator” （AOP:stepAX ）
+ * 		@EnableAspectJAutoProxy
+ * 		->	@Import(AspectJAutoProxyRegistrar.class implements ImportBeanDefinitionRegistrar)
  * 2、AnnotationAwareAspectJAutoProxyCreator源码分析(AUTO_PROXY_CREATOR_BEAN_NAME = "org.springframework.aop.config.internalAutoProxyCreator")：
  * 		AnnotationAwareAspectJAutoProxyCreator
  * 		 extends AspectJAwareAdvisorAutoProxyCreator
@@ -37,7 +39,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
  *		     ->Object bean = resolveBeforeInstantiation(beanName, mbdToUse);
  *		      ->org.springframework.aop.framework.autoproxy.AbstractAutoProxyCreator#postProcessBeforeInstantiation(java.lang.Class, java.lang.String)
  *		       ->Object proxy = createProxy(beanClass, beanName, specificInterceptors, targetSource);
- *		        ->....................累死了，到了这里应该清晰的多了吧！
+ *		        ->
  *
  */
 @EnableAspectJAutoProxy //AOP:stepA1 开启基于注解的AOP模式

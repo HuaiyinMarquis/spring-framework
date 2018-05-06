@@ -48,7 +48,7 @@ public class MethodBeforeAdviceInterceptor implements MethodInterceptor, Seriali
 
 	@Override
 	public Object invoke(MethodInvocation mi) throws Throwable {
-		this.advice.before(mi.getMethod(), mi.getArguments(), mi.getThis() );
+		this.advice.before(mi.getMethod(), mi.getArguments(), mi.getThis() ); //执行前置通知
 		return mi.proceed();
 	}
 

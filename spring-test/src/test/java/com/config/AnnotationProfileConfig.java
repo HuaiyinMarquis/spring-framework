@@ -35,7 +35,7 @@ public class AnnotationProfileConfig implements EmbeddedValueResolverAware {
     }
 
     @Override
-    public void setEmbeddedValueResolver(StringValueResolver resolver) {
+    public void setEmbeddedValueResolver(StringValueResolver resolver) {  //值解析器
         this.name = resolver.resolveStringValue("${person.name}");
     }
 }

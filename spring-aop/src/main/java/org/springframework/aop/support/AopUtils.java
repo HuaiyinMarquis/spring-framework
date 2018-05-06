@@ -281,6 +281,7 @@ public abstract class AopUtils {
 	 * @return whether the pointcut can apply on any method
 	 */
 	public static boolean canApply(Advisor advisor, Class<?> targetClass, boolean hasIntroductions) {
+		//判断对象方法等是否和切入点表达式是否匹配
 		if (advisor instanceof IntroductionAdvisor) {
 			return ((IntroductionAdvisor) advisor).getClassFilter().matches(targetClass);
 		}
@@ -318,7 +319,7 @@ public abstract class AopUtils {
 				// already processed
 				continue;
 			}
-			if (canApply(candidate, clazz, hasIntroductions)) {
+			if (canApply(candidate, clazz, hasIntroductions)) { //判断是否匹配
 				eligibleAdvisors.add(candidate);
 			}
 		}
