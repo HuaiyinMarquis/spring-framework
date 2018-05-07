@@ -35,14 +35,14 @@ import org.springframework.transaction.interceptor.TransactionInterceptor;
  * @see TransactionManagementConfigurationSelector
  */
 @Configuration
-public class ProxyTransactionManagementConfiguration extends AbstractTransactionManagementConfiguration {
+public class ProxyTransactionManagementConfiguration extends AbstractTransactionManagementConfiguration { //spring配置类
 
 	@Bean(name = TransactionManagementConfigUtils.TRANSACTION_ADVISOR_BEAN_NAME)
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-	public BeanFactoryTransactionAttributeSourceAdvisor transactionAdvisor() {
+	public BeanFactoryTransactionAttributeSourceAdvisor transactionAdvisor() { //注册事务增强器
 		BeanFactoryTransactionAttributeSourceAdvisor advisor = new BeanFactoryTransactionAttributeSourceAdvisor();
-		advisor.setTransactionAttributeSource(transactionAttributeSource());
-		advisor.setAdvice(transactionInterceptor());
+		advisor.setTransactionAttributeSource(transactionAttributeSource()); //获取事务属性
+		advisor.setAdvice(transactionInterceptor()); //事务拦截器
 		if (this.enableTx != null) {
 			advisor.setOrder(this.enableTx.<Integer>getNumber("order"));
 		}

@@ -87,7 +87,7 @@ public class AnnotationTransactionAttributeSource extends AbstractFallbackTransa
 	public AnnotationTransactionAttributeSource(boolean publicMethodsOnly) {
 		this.publicMethodsOnly = publicMethodsOnly;
 		this.annotationParsers = new LinkedHashSet<>(2);
-		this.annotationParsers.add(new SpringTransactionAnnotationParser());
+		this.annotationParsers.add(new SpringTransactionAnnotationParser()); //annotation解析器
 		if (jta12Present) {
 			this.annotationParsers.add(new JtaTransactionAnnotationParser());
 		}

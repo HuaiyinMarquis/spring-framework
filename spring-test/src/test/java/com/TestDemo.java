@@ -6,12 +6,12 @@ import com.bean.Student;
 import com.config.AnnotationAopConfig;
 import com.config.AnnotationBaseConfig;
 import com.config.AnnotationProfileConfig;
+import com.config.AnnotationTXConfig;
+import com.tx.UserService;
 import org.junit.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import java.util.Arrays;
 import java.util.Map;
-import java.util.stream.Stream;
 
 public class TestDemo {
 
@@ -66,7 +66,16 @@ public class TestDemo {
 //        Arrays.asList(beanDefinitionNames).stream().forEach(System.out::println);
 //        System.out.println("--------------------------------------------------");
         Student student = (Student) applicationContext.getBean("student");
-        student.study(3);
+//        student.study(3);
+        student.innerMethod();
+        applicationContext.close();
+    }
+
+    @Test
+    public void test4() {
+        AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext(AnnotationTXConfig.class);
+        UserService userService = (UserService) applicationContext.getBean("userService");
+        userService.saveUser();
         applicationContext.close();
     }
 }

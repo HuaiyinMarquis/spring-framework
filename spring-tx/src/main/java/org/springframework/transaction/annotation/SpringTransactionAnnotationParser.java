@@ -55,7 +55,7 @@ public class SpringTransactionAnnotationParser implements TransactionAnnotationP
 		return parseTransactionAnnotation(AnnotationUtils.getAnnotationAttributes(ann, false, false));
 	}
 
-	protected TransactionAttribute parseTransactionAnnotation(AnnotationAttributes attributes) {
+	protected TransactionAttribute parseTransactionAnnotationparseTransactionAnnotationparseTransactionAnnotation(AnnotationAttributes attributes) { //解析事务注解
 		RuleBasedTransactionAttribute rbta = new RuleBasedTransactionAttribute();
 		Propagation propagation = attributes.getEnum("propagation");
 		rbta.setPropagationBehavior(propagation.value());
