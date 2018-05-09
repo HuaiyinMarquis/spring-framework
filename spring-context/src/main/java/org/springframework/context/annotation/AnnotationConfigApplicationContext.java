@@ -85,7 +85,7 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	public AnnotationConfigApplicationContext(Class<?>... annotatedClasses) {
 		this();
 		register(annotatedClasses); //IOC:stepA1 定位、解析、注册BeanDefinition入口
-		refresh();//IOC:stepA4 对IOC容器进行实例化等操作
+		refresh();//IOC:stepA4 刷新容器，对IOC容器进行实例化等操作
 	}
 
 	/**

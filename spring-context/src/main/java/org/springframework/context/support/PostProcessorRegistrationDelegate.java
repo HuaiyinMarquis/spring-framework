@@ -80,6 +80,7 @@ class PostProcessorRegistrationDelegate {
 			List<BeanDefinitionRegistryPostProcessor> currentRegistryProcessors = new ArrayList<>();
 
 			// First, invoke the BeanDefinitionRegistryPostProcessors that implement PriorityOrdered.
+			//获取到所有的BeanDefinitionRegistryPostProcessors子类
 			String[] postProcessorNames =
 					beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
 			for (String ppName : postProcessorNames) {
@@ -198,7 +199,7 @@ class PostProcessorRegistrationDelegate {
 		// a bean is created during BeanPostProcessor instantiation, i.e. when
 		// a bean is not eligible for getting processed by all BeanPostProcessors.
 		int beanProcessorTargetCount = beanFactory.getBeanPostProcessorCount() + 1 + postProcessorNames.length;
-		beanFactory.addBeanPostProcessor(new BeanPostProcessorChecker(beanFactory, beanProcessorTargetCount));//注意这个地方？
+		beanFactory.addBeanPostProcessor(new BeanPostProcessorChecker(beanFactory, beanProcessorTargetCount));
 
 		// Separate between BeanPostProcessors that implement PriorityOrdered,
 		// Ordered, and the rest.
@@ -218,7 +219,7 @@ class PostProcessorRegistrationDelegate {
 					internalPostProcessors.add(pp);
 				}
 			}
-			else if (beanFactory.isTypeMatch(ppName, Ordered.class)) { // internalAutoProxyCreator 放在这里
+			else if (beanFactory.isTypeMatch(ppName, Ordered.class)) { //AOP 匹配internalAutoProxyCreator
 				orderedPostProcessorNames.add(ppName);
 			}
 			else {
@@ -233,10 +234,10 @@ class PostProcessorRegistrationDelegate {
 		// Next, register the BeanPostProcessors that implement Ordered.
 		List<BeanPostProcessor> orderedPostProcessors = new ArrayList<>();
 		for (String ppName : orderedPostProcessorNames) {
-			BeanPostProcessor pp = beanFactory.getBean(ppName, BeanPostProcessor.class); //实例化BeanPostProcessor
+			BeanPostProcessor pp = beanFactory.getBean(ppName, BeanPostProcessor.class); //实例化internalAutoProxyCreator
 			orderedPostProcessors.add(pp);
 			if (pp instanceof MergedBeanDefinitionPostProcessor) {
-				internalPostProcessors.add(pp);//将internalAutoProxyCreator放进去
+				internalPostProcessors.add(pp);//将internalAutoProxyCreator实例放进去
 			}
 		}
 		sortPostProcessors(orderedPostProcessors, beanFactory);

@@ -1,48 +1,50 @@
-# <img src="src/docs/asciidoc/images/spring-framework.png" width="80" height="80"> Spring Framework
+# Spring源码分析
 
-This is the home of the Spring Framework, the foundation for all
-[Spring projects](https://spring.io/projects). Together the Spring Framework and the family of Spring projects make up what we call "Spring". 
+## IOC容器初始化分析
 
-Spring provides everything you need beyond the Java language to create enterprise
-applications in a wide range of scenarios and architectures. Please read the
-[Overview](https://docs.spring.io/spring/docs/current/spring-framework-reference/overview.html#spring-introduction)
-section in the reference for a more complete introduction.
+​	在spring-test工程中的test代码块中我放置了自己写的测试代码，TestDemo.java中有测试各种场景的入口方法。下面我们以**AbstractApplicationContext#refresh()**方法为入口开始分析IOC的初始化，当然你可以根据我这里的说明详细跟进源代码具体流程。
 
-## Code of Conduct
+* prepareRefresh(); 为刷新容器做准备
+* prepareBeanFactory(beanFactory); 为将要使用的BeanFactory做前期准备
+* postProcessBeanFactory(beanFactory);予许后置处理器对其子类进行处理
+* invokeBeanFactoryPostProcessors(beanFactory);调用BeanFactory的后置处理器
+* 待续....
 
-This project is governed by the [Spring Code of Conduct](CODE_OF_CONDUCT.adoc).
-By participating you are expected to uphold this code.
-Please report unacceptable behavior to spring-code-of-conduct@pivotal.io.
+## AOP源码解析
 
-## Access to Binaries
+​	具体的实现逻辑，你可以根据本文的提示在源码中找到我写的注释。有助于你对spring框架源码的理解
 
-For access to artifacts or a distribution zip, see the
-[Spring Framework Artifacts](https://github.com/spring-projects/spring-framework/wiki/Spring-Framework-Artifacts)
-wiki page.
+> **注册阶段--基于@EnableAspectJAutoProxy申明AOP注解为入口进行分析**
+>
+> * 通过注解内部实现我们可以查看到下面关键代码(有修改)，通过下面的代码将**AnnotationAwareAspectJAutoProxyCreator.class**交于Spring注册管理。
+>
+>   ``` java
+>   beanDefinition = new RootBeanDefinition(AnnotationAwareAspectJAutoProxyCreator.class);
+>
+>   registry.registerBeanDefinition("org.springframework.aop.config.internalAutoProxyCreator", beanDefinition );
+>
+>   ```
+>
+> *  我们可以通过分析**AnnotationAwareAspectJAutoProxyCreator.class**源码可以得知其实现了**InstantiationAwareBeanPostProcessor**接口**BeanFactoryAware**接口和**BeanPostProcessor**接口。
+>
+> **注册阶段--在IOC容器初始化刷新时基于BeanPostProcessor的注册处理**
+>
+> ​	跟踪**AnnotationAwareAspectJAutoProxyCreator**的实例化流程：**refresh()->registerBeanPostProcessors()->beanFactory.getBean(ppName, BeanPostProcessor.class)->...参考IOC实例化单例bean的过程...->initializeBean->invokeAwareMethods(beanName, bean)->AbstractAdvisorAutoProxyCreator#setBeanFactory->AnnotationAwareAspectJAutoProxyCreator#initBeanFactory->...->beanFactory.addBeanPostProcessor(postProcessor)**
+>
+> **注册阶段--对自定义的单例Bean进行处理**
+>
+> ​	通过跟踪**refresh()->finishBeanFactoryInitialization(beanFactory)->beanFactory.preInstantiateSingletons()->getBean(beanName)->doGetBean(name..)->return createBean(beanName, mbd, args)->doCreateBean->applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName)->beanProcessor.postProcessAfterInitialization(result, beanName)->wrapIfNecessary(bean, beanName, cacheKey)->proxyFactory.getProxy(getProxyClassLoader())**，到这里作了创建代理对象以及注册增强器的处理。
 
-## Documentation
+> **调用阶段--拦截器的链式调用**
+>
+> ​	跟踪代码**spring-test模块中的com.TestDemo#test3方法student.innerMethod()**流程如下：
+>
+>  * 跳转到**org.springframework.aop.framework.CglibAopProxy.DynamicAdvisedInterceptor#intercept**方法继续执行
+>  * 执行拦截器链**new CglibMethodInvocation(proxy, target, method, args, targetClass, chain, methodProxy).proceed()**
+>
+> ​	具体的连接器链调用流程代码里有详细的注释喔~
+>
+> ​	
 
-The Spring Frameworks maintains reference documentation
-([published](http://docs.spring.io/spring-framework/docs/current/spring-framework-reference/) and
-[source](src/docs/asciidoc)),
-Github [wiki pages](https://github.com/spring-projects/spring-framework/wiki), and an
-[API reference](http://docs.spring.io/spring-framework/docs/current/javadoc-api/).
-There are also [guides and tutorials](https://spring.io/guides) across Spring projects.
 
-## Build from Source
 
-See the [Build from Source](https://github.com/spring-projects/spring-framework/wiki/Build-from-Source)
-wiki page and also [CONTRIBUTING.md](CONTRIBUTING.md).
-
-## Stay in Touch
-
-Follow [@SpringCentral](https://twitter.com/springcentral),
-[@SpringFramework](https://twitter.com/springframework), and its
-[team members](https://twitter.com/springframework/lists/team/members) on Twitter.
-In-depth articles can be found at [The Spring Blog](http://spring.io/blog/),
-and releases are announced via our [news feed](http://spring.io/blog/category/news).
-
-## License
-
-The Spring Framework is released under version 2.0 of the
-[Apache License](http://www.apache.org/licenses/LICENSE-2.0).

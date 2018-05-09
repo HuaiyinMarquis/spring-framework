@@ -737,8 +737,8 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		//触发所有非懒加载单实例Bean的初始化
 		for (String beanName : beanNames) {
 			RootBeanDefinition bd = getMergedLocalBeanDefinition(beanName);
-			if (!bd.isAbstract() && bd.isSingleton() && !bd.isLazyInit()) {
-				if (isFactoryBean(beanName)) {
+			if (!bd.isAbstract() && bd.isSingleton() && !bd.isLazyInit()) { //判断非抽象类，单例，以及懒加载
+				if (isFactoryBean(beanName)) { //自定义的factoryBean
 					Object bean = getBean(FACTORY_BEAN_PREFIX + beanName);
 					if (bean instanceof FactoryBean) {
 						final FactoryBean<?> factory = (FactoryBean<?>) bean;
