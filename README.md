@@ -5,10 +5,17 @@
 ​	在spring-test工程中的test代码块中我放置了自己写的测试代码，TestDemo.java中有测试各种场景的入口方法。下面我们以**AbstractApplicationContext#refresh()**方法为入口开始分析IOC的初始化，当然你可以根据我这里的说明详细跟进源代码具体流程。
 
 * prepareRefresh(); 为刷新容器做准备
+* obtainFreshBeanFactory();获取（刷新）BeanFactory
 * prepareBeanFactory(beanFactory); 为将要使用的BeanFactory做前期准备
 * postProcessBeanFactory(beanFactory);予许后置处理器对其子类进行处理
 * invokeBeanFactoryPostProcessors(beanFactory);调用BeanFactory的后置处理器
-* 待续....
+* registerBeanPostProcessors(beanFactory);注册Bean的后置处理器，用于拦截Bean的创建
+* initMessageSource();加载信息源
+* initApplicationEventMulticaster();为上下文实例化事件多播器，用于事件的广播
+* onRefresh();留与子类做扩展功能
+* registerListeners();注册事件监听器，将之放入之间多播器
+* finishBeanFactoryInitialization(beanFactory);完成非懒加载的单实例bean的实例化，这里涉及到AOP具体的实现原理，可以重点关注。
+* finishRefresh();发布相应的事件
 
 ## AOP源码解析
 
@@ -42,9 +49,9 @@
 >  * 跳转到**org.springframework.aop.framework.CglibAopProxy.DynamicAdvisedInterceptor#intercept**方法继续执行
 >  * 执行拦截器链**new CglibMethodInvocation(proxy, target, method, args, targetClass, chain, methodProxy).proceed()**
 >
-> ​	具体的连接器链调用流程代码里有详细的注释喔~
+>   ​具体的连接器链调用流程代码里有详细的注释喔~
 >
-> ​	
+>   ​
 
 
 

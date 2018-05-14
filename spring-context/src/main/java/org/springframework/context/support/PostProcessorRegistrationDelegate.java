@@ -91,7 +91,7 @@ class PostProcessorRegistrationDelegate {
 			}
 			sortPostProcessors(currentRegistryProcessors, beanFactory);
 			registryProcessors.addAll(currentRegistryProcessors);
-			invokeBeanDefinitionRegistryPostProcessors(currentRegistryProcessors, registry);
+			invokeBeanDefinitionRegistryPostProcessors(currentRegistryProcessors, registry);//调用Bean定义信息注册器的后置处理
 			currentRegistryProcessors.clear();
 
 			// Next, invoke the BeanDefinitionRegistryPostProcessors that implement Ordered.

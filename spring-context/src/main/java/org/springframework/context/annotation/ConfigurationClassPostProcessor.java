@@ -230,7 +230,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		}
 		this.registriesPostProcessed.add(registryId);
 
-		processConfigBeanDefinitions(registry);
+		processConfigBeanDefinitions(registry);//处理bean定义信息配置
 	}
 
 	/**
@@ -263,7 +263,15 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		List<BeanDefinitionHolder> configCandidates = new ArrayList<>();
 		String[] candidateNames = registry.getBeanDefinitionNames();
 
-		for (String beanName : candidateNames) {
+		/**
+		 * 0 = "org.springframework.context.annotation.internalConfigurationAnnotationProcessor"
+		 * 1 = "org.springframework.context.annotation.internalAutowiredAnnotationProcessor"
+		 * 2 = "org.springframework.context.annotation.internalRequiredAnnotationProcessor"
+		 * 3 = "org.springframework.context.event.internalEventListenerProcessor"
+		 * 4 = "org.springframework.context.event.internalEventListenerFactory"
+		 * 5 = "annotationBaseConfig"
+		 */
+		for (String beanName : candidateNames) { //找到@Configuration 配置类放到configCandidates
 			BeanDefinition beanDef = registry.getBeanDefinition(beanName);
 			if (ConfigurationClassUtils.isFullConfigurationClass(beanDef) ||
 					ConfigurationClassUtils.isLiteConfigurationClass(beanDef)) {
@@ -306,6 +314,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		}
 
 		// Parse each @Configuration class
+		//解析每个@Configuration注解的类
 		ConfigurationClassParser parser = new ConfigurationClassParser(
 				this.metadataReaderFactory, this.problemReporter, this.environment,
 				this.resourceLoader, this.componentScanBeanNameGenerator, registry);
@@ -325,7 +334,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 						registry, this.sourceExtractor, this.resourceLoader, this.environment,
 						this.importBeanNameGenerator, parser.getImportRegistry());
 			}
-			this.reader.loadBeanDefinitions(configClasses);
+			this.reader.loadBeanDefinitions(configClasses); //加载BeanDefintion
 			alreadyParsed.addAll(configClasses);
 
 			candidates.clear();
